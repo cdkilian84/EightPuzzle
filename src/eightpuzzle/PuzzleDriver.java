@@ -19,17 +19,12 @@ public class PuzzleDriver {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        GameHandler handler = new GameHandler("812043765");
-        PriorityQueue<StateNode> explored = new PriorityQueue<>();
-        
-        StateNode nodeA = new StateNode("182043765", null);
-        StateNode nodeB = new StateNode("182043765", nodeA);
-        
-        explored.add(nodeA);
-        if(explored.contains(nodeB)){
-            System.out.println("HASH WORKS");
+        GameHandler handler = new GameHandler("214056837");
+        if(handler.checkIfSolvable()){
+            handler.solutionSearch();
+            System.out.println(handler.outputSteps());
         }else{
-            System.out.println("Noooo");
+            System.out.println("NOT SOLVABLE");
         }
     }
     
