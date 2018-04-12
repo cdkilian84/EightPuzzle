@@ -72,6 +72,7 @@ public class StateNode implements Comparable<StateNode>{
         return boardState.hashCode();
     }
     
+    //two StateNodes are equal to each other if they represent the same state (same game board configuration)
     @Override
     public boolean equals(Object otherNode){
         boolean flag = false;
