@@ -19,7 +19,7 @@ public class PuzzleDriver {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        GameHandler handler = new GameHandler("214056837");
+        GameHandler handler = new GameHandler("034871652");
         if(handler.checkIfSolvable()){
             handler.solutionSearch();
             System.out.println(handler.outputSteps());

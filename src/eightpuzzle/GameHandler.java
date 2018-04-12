@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.Stack;
 
 /**
- *
- * @author Chris
+thing
  */
 public class GameHandler {
     private StateNode root; //root node for the game - contains the starting configuration for an 8-puzzle
@@ -44,7 +44,6 @@ public class GameHandler {
             String gameBoard = temp.toString();
             int inversionCount = 0;
             
-            System.out.println("Value of gameBoard is: " + gameBoard);
             for(int i = 0; i < gameBoard.length(); i++){
                 for(int j = i+1; j < gameBoard.length(); j++){                   
                     if(Character.getNumericValue(gameBoard.charAt(i)) > Character.getNumericValue(gameBoard.charAt(j))){ //if i-value is greater than j-value, increment inversion count
@@ -61,6 +60,7 @@ public class GameHandler {
         return solvable;
     }
     
+    //Main implementation of A* algorithm - search for an optimal solution to the given "root" gameboard
     public void solutionSearch(){
         StateNode node;
         Queue<StateNode> frontier = new PriorityQueue<>();
@@ -70,14 +70,17 @@ public class GameHandler {
         
         while(!frontier.isEmpty()){
             node = frontier.poll();
+            //System.out.println("Examining node with state: " + node.getNodeState());
             if(goalTest(node)){
                 solutionNode = node;
+                System.out.println("Solution found with search cost of " + searchCost);
                 break;
             }
             explored.add(node);
             for(StateNode childNode : nodeGenerator(node)){
-                if(!explored.contains(node) && !frontier.contains(node)){
+                if(!explored.contains(childNode) && !frontier.contains(childNode)){
                     frontier.add(childNode);
+                    searchCost++;
                 }else if(frontier.contains(childNode)){
                     //if the child node is already in the frontier but with a higher path cost, replace with lower cost child node
                     frontier = checkLowerCost(frontier, childNode);
@@ -87,28 +90,20 @@ public class GameHandler {
         
     }
     
-    //Method to check for and potentially replace a node from within the frontier priority queue - requires removing elements
-    //from queue, storing them temporarily in a list until the desired node is found. Then checks can be made, and elements returned
-    //to the queue, which will itself be returned.
-    private Queue<StateNode> checkLowerCost(Queue<StateNode> frontier, StateNode nodeToCheck){
-        Queue<StateNode> holdingQueue = new PriorityQueue<>();
+    
+    //check if the examined node is the goal node, meaning its state matches the string "012345678"
+    private boolean goalTest(StateNode node){
+        boolean goal = false;
         
-        while(!frontier.isEmpty()){
-            StateNode frontierNode = frontier.poll();
-            if(frontierNode.equals(nodeToCheck) && 
-                    ((frontierNode.getCostToNode() + frontierNode.getHeuristicVal()) > (nodeToCheck.getCostToNode() + nodeToCheck.getHeuristicVal()))){
-                holdingQueue.add(nodeToCheck);
-            }else{
-                holdingQueue.add(frontierNode);
-            }
+        if(node.getNodeState().equals("012345678")){
+            goal = true;
         }
         
-        return holdingQueue;
+        return goal;
     }
     
     
-    
-    //generate all possible new nodes for a given node state and return them as an array
+    //generate all possible new nodes (child nodes) for a given node state and return them as an array
     private List<StateNode> nodeGenerator(StateNode currentNode){
         List<StateNode> expandedNodes = new ArrayList<>(); //list of new nodes to be returned
         String currentBoard = currentNode.getNodeState();
@@ -165,16 +160,27 @@ public class GameHandler {
         return expandedNodes;
     }
     
-    //check if the examined node is the goal node, meaning its state matches the string "012345678"
-    private boolean goalTest(StateNode node){
-        boolean goal = false;
+    
+    //Method to check for and potentially replace a node from within the frontier priority queue - requires removing elements
+    //from queue, storing them temporarily in a list until the desired node is found. Then checks can be made, and elements returned
+    //to the queue, which will itself be returned.
+    private Queue<StateNode> checkLowerCost(Queue<StateNode> frontier, StateNode nodeToCheck){
+        Queue<StateNode> holdingQueue = new PriorityQueue<>();
         
-        if(node.getNodeState().equals("012345678")){
-            goal = true;
+        while(!frontier.isEmpty()){
+            StateNode frontierNode = frontier.poll();
+            if(frontierNode.equals(nodeToCheck) && 
+                    ((frontierNode.getCostToNode() + frontierNode.getHeuristicVal()) > (nodeToCheck.getCostToNode() + nodeToCheck.getHeuristicVal()))){
+                holdingQueue.add(nodeToCheck);
+            }else{
+                holdingQueue.add(frontierNode);
+            }
         }
         
-        return goal;
+        return holdingQueue;
     }
+    
+   
     
     //swap the empty space tile with the tile being moved by converting the string to a char array,
     //swapping chars, then converting back to a string to be returned.
@@ -186,6 +192,28 @@ public class GameHandler {
         swap[tileToMove] = temp;
 
         return new String(swap);
+    }
+    
+    public String outputSteps(){
+        StringBuilder output = new StringBuilder();
+        if(solutionNode != null){
+            Stack nodePath = new Stack();
+            StateNode currentNode = solutionNode;
+            while(currentNode != null){
+                nodePath.push(currentNode);
+                currentNode = currentNode.getParent();
+            }
+            
+            int count = 0;
+            while(!nodePath.isEmpty()){
+                StateNode outputNode = (StateNode)nodePath.pop();
+                output.append("Step " + count + ": " + outputNode.getNodeState() + "\n");
+                count++;
+            }
+        }else{
+            output.append("HAS NOT BEEN SOLVED YET");
+        }
+        return output.toString();
     }
     
 }
