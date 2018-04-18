@@ -21,6 +21,8 @@ public class GameHandler {
     private StateNode solutionNode;
     private int searchCost;
     
+    private final String SOLUTION = "012345678";
+    
     public GameHandler(){
         //with empty constructor, generate random game board
         searchCost = 0;
@@ -60,8 +62,32 @@ public class GameHandler {
         return solvable;
     }
     
+    
+    public StateNode getSolution(){
+        
+        if(solutionNode == null){
+            solutionSearch();
+        }
+        
+        return solutionNode;
+    }
+    
+    public int getDepth(){
+        int depth = 0;
+        
+        if(solutionNode != null){
+            StateNode currentNode = solutionNode;
+            while(currentNode.getParent() != null){
+                currentNode = currentNode.getParent();
+                depth++;
+            }
+        }
+        
+        return depth;
+    }
+    
     //Main implementation of A* algorithm - search for an optimal solution to the given "root" gameboard
-    public void solutionSearch(){
+    private void solutionSearch(){
         StateNode node;
         Queue<StateNode> frontier = new PriorityQueue<>();
         Set<StateNode> explored = new HashSet<>();
@@ -78,16 +104,15 @@ public class GameHandler {
             }
             explored.add(node);
             for(StateNode childNode : nodeGenerator(node)){
-                if(!explored.contains(childNode) && !frontier.contains(childNode)){
+                if(!explored.contains(childNode)){ //&& !frontier.contains(childNode)){
                     frontier.add(childNode);
                     searchCost++;
-                }else if(frontier.contains(childNode)){
+                }//else if(frontier.contains(childNode)){
                     //if the child node is already in the frontier but with a higher path cost, replace with lower cost child node
-                    frontier = checkLowerCost(frontier, childNode);
-                }
+                 //   frontier = checkLowerCost(frontier, childNode);
+                //}
             }
         }
-        
     }
     
     
@@ -95,7 +120,7 @@ public class GameHandler {
     private boolean goalTest(StateNode node){
         boolean goal = false;
         
-        if(node.getNodeState().equals("012345678")){
+        if(node.getNodeState().equals(SOLUTION)){
             goal = true;
         }
         
@@ -213,6 +238,9 @@ public class GameHandler {
         }else{
             output.append("HAS NOT BEEN SOLVED YET");
         }
+        
+        System.out.println("Root node heuristic val: " + root.getHeuristicVal());
+        
         return output.toString();
     }
     
