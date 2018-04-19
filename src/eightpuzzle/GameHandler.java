@@ -24,10 +24,8 @@ public class GameHandler {
     private final String HEURISTIC_2 = "H2"; //corresponds to StateNodeH2 implementing heuristic #2 - the sum of the distances of the tiles from their goal positions
     private final String SOLUTION = "012345678";
     
-    
     public GameHandler(String submittedGame, String heuristic){
         nodeBuilder = new NodeFactory();
-        
         //If passed heuristic value is not heuristic_2, then default to heuristic_1
         if(heuristic.equals(HEURISTIC_2)){
             chosenHeuristic = HEURISTIC_2;
@@ -89,7 +87,6 @@ public class GameHandler {
         StateNode node;
         Queue<StateNode> frontier = new PriorityQueue<>();
         Set<StateNode> explored = new HashSet<>();
-        
         frontier.add(root);
         
         while(!frontier.isEmpty()){
@@ -97,7 +94,7 @@ public class GameHandler {
 
             if(goalTest(node)){
                 solutionNode = node;
-                System.out.println("Solution found with search cost of " + searchCost);
+                //System.out.println("Solution found with search cost of " + searchCost);
                 break;
             }
             explored.add(node);
@@ -218,6 +215,12 @@ public class GameHandler {
     //Getter for the initial (root) game state.
     public String getInitialBoard(){
         return root.getNodeState();
+    }
+    
+    
+    //Getter for the total cost - note this will return 0 if the game has not been solved yet
+    public int getTotalCost(){
+        return searchCost;
     }
     
     
