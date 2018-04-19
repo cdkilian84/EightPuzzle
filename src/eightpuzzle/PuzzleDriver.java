@@ -72,6 +72,7 @@ public class PuzzleDriver {
                         int checkVal = playerGame.indexOf(Integer.toString(i));
                         if(checkVal == -1){
                             validFlag = false;
+                            break;
                         }
                     }
                     if(validFlag){ //checker.matcher(playerGame).matches()
