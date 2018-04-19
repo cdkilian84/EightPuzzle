@@ -1,8 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+//Christopher Kilian
+//CS 420 - Project 1: 8-Puzzle
+
 package eightpuzzle;
 
 import java.io.BufferedReader;
@@ -21,15 +19,15 @@ import java.util.Set;
  */
 public class PuzzleDriver {
     private static List<String> games;
-    /**
-     * @param args the command line arguments
-     */
+    private static final String HEURISTIC_1 = "H1"; //corresponds to StateNodeH1 implementing heuristic #1 - number of misplaced tiles
+    private static final String HEURISTIC_2 = "H2"; //corresponds to StateNodeH2 implementing heuristic #2 - the sum of the distances of the tiles from their goal positions
+    
     public static void main(String[] args) {
         
         readFile("gameData.txt");
         
         for(String game : games){
-            GameHandler handler = new GameHandler(game);
+            GameHandler handler = new GameHandler(game, HEURISTIC_2);
             if(handler.checkIfSolvable()){
                 handler.getSolution();
                 if(handler.getDepth() != 20){

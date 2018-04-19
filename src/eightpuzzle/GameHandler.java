@@ -1,8 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+//Christopher Kilian
+//CS 420 - Project 1: 8-Puzzle
+
 package eightpuzzle;
 
 import java.util.ArrayList;
@@ -13,26 +11,34 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 
-/**
-thing
- */
+
+//This class handles the actual playing of the 8-puzzle game. It implements the A* search algorithm, and handles various other game related actions such as
+//generating new nodes when appropriate and outputting various game values (such as a trace of the steps to the solution).
 public class GameHandler {
     private StateNode root; //root node for the game - contains the starting configuration for an 8-puzzle
     private StateNode solutionNode;
     private int searchCost;
-    
+    private NodeFactory nodeBuilder; //for building instances of specific node types based on chosen heuristic
+    private String chosenHeuristic;
+    private final String HEURISTIC_1 = "H1"; //corresponds to StateNodeH1 implementing heuristic #1 - number of misplaced tiles
+    private final String HEURISTIC_2 = "H2"; //corresponds to StateNodeH2 implementing heuristic #2 - the sum of the distances of the tiles from their goal positions
     private final String SOLUTION = "012345678";
     
-    public GameHandler(){
-        //with empty constructor, generate random game board
-        searchCost = 0;
-    }
     
-    public GameHandler(String submittedGame){
+    public GameHandler(String submittedGame, String heuristic){
+        nodeBuilder = new NodeFactory();
+        
+        //If passed heuristic value is not heuristic_2, then default to heuristic_1
+        if(heuristic.equals(HEURISTIC_2)){
+            chosenHeuristic = HEURISTIC_2;
+        }else{
+            chosenHeuristic = HEURISTIC_1;
+        }
+        
         if(submittedGame.length() != 9){
             System.out.println("Invalid Game Board! Generating random one instead...");
         }else{
-            root = new StateNode(submittedGame, null);
+            root = nodeBuilder.getNode(chosenHeuristic, submittedGame, null); //new StateNodeH1(submittedGame, null);
         }
         searchCost = 0;
     }
@@ -136,76 +142,55 @@ public class GameHandler {
         
         switch(emptySpace){
             case 0:
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 0, 1), currentNode));
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 0, 3), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 0, 1), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 0, 3), currentNode));
                 break;
             case 1:  
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 1, 0), currentNode));
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 1, 2), currentNode));
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 1, 4), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 1, 0), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 1, 2), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 1, 4), currentNode));
                 break;
             case 2:  
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 2, 1), currentNode));
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 2, 5), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 2, 1), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 2, 5), currentNode));
                 break;
             case 3:  
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 3, 0), currentNode));
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 3, 4), currentNode));
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 3, 6), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 3, 0), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 3, 4), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 3, 6), currentNode));
                 break;
             case 4:  
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 4, 1), currentNode));
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 4, 3), currentNode));
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 4, 5), currentNode));
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 4, 7), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 4, 1), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 4, 3), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 4, 5), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 4, 7), currentNode));
                 break;
             case 5:  
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 5, 2), currentNode));
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 5, 4), currentNode));
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 5, 8), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 5, 2), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 5, 4), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 5, 8), currentNode));
                 break;
             case 6:  
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 6, 3), currentNode));
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 6, 7), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 6, 3), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 6, 7), currentNode));
                 break;
             case 7:  
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 7, 4), currentNode));
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 7, 6), currentNode));
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 7, 8), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 7, 4), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 7, 6), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 7, 8), currentNode));
                 break;
             case 8:  
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 8, 5), currentNode));
-                expandedNodes.add(new StateNode(moveTile(currentBoard, 8, 7), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 8, 5), currentNode));
+                expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 8, 7), currentNode));
                 break;
             default: 
                 System.out.println("MASSIVE ERROR");
                 break;
         }
-        
+                
         return expandedNodes;
     }
     
-    
-    //Method to check for and potentially replace a node from within the frontier priority queue - requires removing elements
-    //from queue, storing them temporarily in a list until the desired node is found. Then checks can be made, and elements returned
-    //to the queue, which will itself be returned.
-    private Queue<StateNode> checkLowerCost(Queue<StateNode> frontier, StateNode nodeToCheck){
-        Queue<StateNode> holdingQueue = new PriorityQueue<>();
-        
-        while(!frontier.isEmpty()){
-            StateNode frontierNode = frontier.poll();
-            if(frontierNode.equals(nodeToCheck) && 
-                    ((frontierNode.getCostToNode() + frontierNode.getHeuristicVal()) > (nodeToCheck.getCostToNode() + nodeToCheck.getHeuristicVal()))){
-                holdingQueue.add(nodeToCheck);
-            }else{
-                holdingQueue.add(frontierNode);
-            }
-        }
-        
-        return holdingQueue;
-    }
-    
-   
     
     //swap the empty space tile with the tile being moved by converting the string to a char array,
     //swapping chars, then converting back to a string to be returned.
@@ -244,4 +229,23 @@ public class GameHandler {
         return output.toString();
     }
     
+    
+        //Method to check for and potentially replace a node from within the frontier priority queue - requires removing elements
+    //from queue, storing them temporarily in a list until the desired node is found. Then checks can be made, and elements returned
+    //to the queue, which will itself be returned.
+//    private Queue<StateNode> checkLowerCost(Queue<StateNode> frontier, StateNode nodeToCheck){
+//        Queue<StateNode> holdingQueue = new PriorityQueue<>();
+//        
+//        while(!frontier.isEmpty()){
+//            StateNode frontierNode = frontier.poll();
+//            if(frontierNode.equals(nodeToCheck) && 
+//                    ((frontierNode.getCostToNode() + frontierNode.getHeuristicVal()) > (nodeToCheck.getCostToNode() + nodeToCheck.getHeuristicVal()))){
+//                holdingQueue.add(nodeToCheck);
+//            }else{
+//                holdingQueue.add(frontierNode);
+//            }
+//        }
+//        
+//        return holdingQueue;
+//    }
 }
