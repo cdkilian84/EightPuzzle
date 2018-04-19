@@ -69,6 +69,8 @@ public class GameHandler {
     }
     
     
+    //Public method for retrieving the solution state node - only runs solutionSearch if the solution node
+    //has not already been found, otherwise just return the solution node.
     public StateNode getSolution(){
         
         if(solutionNode == null){
@@ -78,21 +80,11 @@ public class GameHandler {
         return solutionNode;
     }
     
-    public int getDepth(){
-        int depth = 0;
-        
-        if(solutionNode != null){
-            StateNode currentNode = solutionNode;
-            while(currentNode.getParent() != null){
-                currentNode = currentNode.getParent();
-                depth++;
-            }
-        }
-        
-        return depth;
-    }
     
     //Main implementation of A* algorithm - search for an optimal solution to the given "root" gameboard
+    //Maintains a frontier of unvisited nodes stored in a priority queue (nodes implement appropriate methods for proper queueing order),
+    //as well as a hashset of explored nodes (to ensure no node is revisited). Graph search implementation of A* in other words.
+    //When the goal node is reached, the solution node is saved as a member variable of the game handler for easy access later.
     private void solutionSearch(){
         StateNode node;
         Queue<StateNode> frontier = new PriorityQueue<>();
@@ -102,7 +94,7 @@ public class GameHandler {
         
         while(!frontier.isEmpty()){
             node = frontier.poll();
-            //System.out.println("Examining node with state: " + node.getNodeState());
+
             if(goalTest(node)){
                 solutionNode = node;
                 System.out.println("Solution found with search cost of " + searchCost);
@@ -122,7 +114,7 @@ public class GameHandler {
     }
     
     
-    //check if the examined node is the goal node, meaning its state matches the string "012345678"
+    //Check if the examined node is the goal node, meaning its state matches the solution string.
     private boolean goalTest(StateNode node){
         boolean goal = false;
         
@@ -134,7 +126,9 @@ public class GameHandler {
     }
     
     
-    //generate all possible new nodes (child nodes) for a given node state and return them as an array
+    //Method to generate all possible new nodes (child nodes) for a given node state and return them as an array.
+    //Potential moves are based on the location of the "0" in the string (the empty space) and have been hard-coded
+    //based on this, as the possible 8-puzzle moves will always be the same.
     private List<StateNode> nodeGenerator(StateNode currentNode){
         List<StateNode> expandedNodes = new ArrayList<>(); //list of new nodes to be returned
         String currentBoard = currentNode.getNodeState();
@@ -184,7 +178,7 @@ public class GameHandler {
                 expandedNodes.add(nodeBuilder.getNode(chosenHeuristic, moveTile(currentBoard, 8, 7), currentNode));
                 break;
             default: 
-                System.out.println("MASSIVE ERROR");
+                System.out.println("ERROR - IMPOSSIBLE EMPTY SPACE LOCATION DISCOVERED");
                 break;
         }
                 
@@ -192,7 +186,7 @@ public class GameHandler {
     }
     
     
-    //swap the empty space tile with the tile being moved by converting the string to a char array,
+    //Swap the empty space tile with the tile being moved by converting the string to a char array,
     //swapping chars, then converting back to a string to be returned.
     private String moveTile(String board, int emptySpace, int tileToMove){
         char[] swap = board.toCharArray();
@@ -204,6 +198,32 @@ public class GameHandler {
         return new String(swap);
     }
     
+    
+    //Getter for the depth of the solution node.
+    public int getDepth(){
+        int depth = 0;
+        
+        if(solutionNode != null){
+            StateNode currentNode = solutionNode;
+            while(currentNode.getParent() != null){
+                currentNode = currentNode.getParent();
+                depth++;
+            }
+        }
+        
+        return depth;
+    }
+    
+    
+    //Getter for the initial (root) game state.
+    public String getInitialBoard(){
+        return root.getNodeState();
+    }
+    
+    
+    //Output a string representing the order of steps to be taken to reach the goal node from the
+    //root node. Works backwards by tracing the path from goal to root, pushing these values to a stack,
+    //and then reading out the stack to a StringBuilder.
     public String outputSteps(){
         StringBuilder output = new StringBuilder();
         if(solutionNode != null){
@@ -224,7 +244,7 @@ public class GameHandler {
             output.append("HAS NOT BEEN SOLVED YET");
         }
         
-        System.out.println("Root node heuristic val: " + root.getHeuristicVal());
+        //System.out.println("Root node heuristic val: " + root.getHeuristicVal());
         
         return output.toString();
     }

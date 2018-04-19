@@ -3,20 +3,21 @@
 
 package eightpuzzle;
 
-/**
- *
- * @author Chris
- */
+//Concrete subclass of StateNode which implements Heuristic #2, based on the sum of the Manhattan distances of each tile to their
+//appropriate locations.
 public class StateNodeH2 extends StateNode {
     
     private int heuristicVal; //heuristic value for this node
 
+    //constructor
     public StateNodeH2(String board, StateNode parentNode) {
         super(board, parentNode);
+        heuristicVal = 0;
         manhattenDistanceHeuristic();
     }
     
-        //heuristic #2 - the sum of the distances of the tiles from their goal positions (AKA Manhattan distance)
+    
+    //heuristic #2 - the sum of the distances of the tiles from their goal positions (AKA Manhattan distance)
     private void manhattenDistanceHeuristic(){
         String gameBoard = super.getNodeState();
         int totalDistance = 0;
@@ -43,12 +44,15 @@ public class StateNodeH2 extends StateNode {
         heuristicVal = totalDistance;
     }
     
-
+    
+    //Getter for the heuristic value.
     @Override
     public int getHeuristicVal() {
         return heuristicVal;
     }
 
+    
+    //Comparator based on the total cost value of a node, which is the sum of the path cost and heuristic value.
     @Override
     public int compareTo(StateNode otherNode) {
         int thisNodeVal = super.getCostToNode() + heuristicVal;

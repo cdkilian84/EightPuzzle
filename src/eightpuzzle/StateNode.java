@@ -4,11 +4,14 @@
 package eightpuzzle;
 
 
+//Abstract class representing a state node - each node contains the current state of the game board (represented as a string), a reference
+//to the parent node (null when the node is the root), and the path cost to this node. Concrete subclasses must implement the heuristic method 
+//themselves to be returned, as well as the "compareTo" method (which relies on knowledge of the heuristic value).
 public abstract class StateNode implements Comparable<StateNode>{
     private StateNode parent; //parent reference
     private String boardState; //state of the board at this node
     private int costToNode; //cumulative step cost to this node
-    //private int heuristicVal; //heuristic value for this node
+
     
     //constructor
     public StateNode(String board, StateNode parentNode){
@@ -23,15 +26,19 @@ public abstract class StateNode implements Comparable<StateNode>{
         }
     }
     
+    //abstract methods to be implemented by subclasses
     public abstract int getHeuristicVal();
     
     
-
+    @Override
+    public abstract int compareTo(StateNode otherNode);
     
     
+    //Getters for the various private member variables.
     public String getNodeState(){
         return boardState;
     }
+    
     
     public int getCostToNode(){
         return costToNode;
@@ -41,15 +48,13 @@ public abstract class StateNode implements Comparable<StateNode>{
     public StateNode getParent(){
         return parent;
     }
-
-    @Override
-    public abstract int compareTo(StateNode otherNode);
     
-    //hash each node object based on its state string
+    
+    //Hash each node object based on its state string.
     @Override
     public int hashCode(){
         return boardState.hashCode();
-//        int primeval = 31;
+//        int primeval = 19;
 //        int hash = boardState.hashCode();
 //        if(parent != null){
 //            hash += primeval * parent.hashCode();
@@ -57,7 +62,8 @@ public abstract class StateNode implements Comparable<StateNode>{
 //        return hash;
     }
     
-    //two StateNodes are equal to each other if they represent the same state (same game board configuration)
+    
+    //Two StateNodes are equal to each other if they represent the same state (same game board configuration).
     @Override
     public boolean equals(Object otherNode){
         boolean flag = false;
