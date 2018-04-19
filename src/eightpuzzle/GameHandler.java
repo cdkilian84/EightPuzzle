@@ -36,7 +36,7 @@ public class GameHandler {
         }
         
         if(submittedGame.length() != 9){
-            System.out.println("Invalid Game Board! Generating random one instead...");
+            System.out.println("Invalid Game Board!!!");
         }else{
             root = nodeBuilder.getNode(chosenHeuristic, submittedGame, null); //new StateNodeH1(submittedGame, null);
         }
