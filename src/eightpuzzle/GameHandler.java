@@ -101,11 +101,12 @@ public class GameHandler {
             for(StateNode childNode : nodeGenerator(node)){
                 if(!explored.contains(childNode)){ //&& !frontier.contains(childNode)){
                     frontier.add(childNode);
-                    searchCost++;
+                    
                 }//else if(frontier.contains(childNode)){
                     //if the child node is already in the frontier but with a higher path cost, replace with lower cost child node
                  //   frontier = checkLowerCost(frontier, childNode);
                 //}
+                searchCost++;
             }
         }
     }

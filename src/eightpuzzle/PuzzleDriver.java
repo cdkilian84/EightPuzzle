@@ -110,6 +110,7 @@ public class PuzzleDriver {
         
         
         //Testing stuff happens here - commented out for submission
+        
         List<String> allGames = generateAllTestCases();
         Tester myTester = new Tester();
         
@@ -122,14 +123,14 @@ public class PuzzleDriver {
         
         for(Integer depth : averageTimes.keySet()){
             System.out.printf("Depth " + depth + ":\tTime: %.2f \n", averageTimes.get(depth));
-            output.append(depth + "," + averageTimes.get(depth) + "\n");
+            output.append(depth + "," + instances.get(depth) + "," + averageTimes.get(depth) + "\n");
         }
         outputResults(output.toString(), "timeResults.csv");
         output = new StringBuilder();
         
         for(Integer depth : averageCosts.keySet()){
             System.out.printf("Depth " + depth + ":\tCost: %.2f \n", averageCosts.get(depth));
-            output.append(depth + "," + averageCosts.get(depth) + "\n");
+            output.append(depth + "," + instances.get(depth) + "," + averageCosts.get(depth) + "\n");
         }
         outputResults(output.toString(), "costResults.csv");
         
@@ -138,6 +139,7 @@ public class PuzzleDriver {
             totalInstances += instances.get(depth);
         }
         System.out.println("Total instances: " + totalInstances);
+        
     }
     
     public static void readFile(String fileName) {
@@ -172,7 +174,7 @@ public class PuzzleDriver {
         List<String> allGames = new ArrayList<>();
         int count = 0;
         
-        while(count < 800){
+        while(count < 1000){
             String potentialGame = randomGameGenerator();
             GameHandler handler = new GameHandler(potentialGame, HEURISTIC_1);
             if(handler.checkIfSolvable()){
@@ -188,18 +190,16 @@ public class PuzzleDriver {
         PrintWriter pw = null;
         try{
             pw = new PrintWriter(new File(fileName));
+            StringBuilder output = new StringBuilder();
+            output.append("Depth,Instances,Average Time\n");
+            output.append(resultsString);
+        
+            pw.write(output.toString());
+            pw.close();
         }catch(Exception e){
             System.out.println("PROBLEM OUTPUTTING VALUES");
             System.out.println(e.getMessage());
         }
-        StringBuilder output = new StringBuilder();
-        output.append("depth,average time\n");
-
-        
-        output.append(resultsString);
-        
-        pw.write(output.toString());
-        pw.close();
     }
     
     

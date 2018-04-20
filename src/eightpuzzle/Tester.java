@@ -1,18 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+//Christopher Kilian
+//CS 420 - Project 1: 8-Puzzle
+
 package eightpuzzle;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- * @author Chris
- */
+//This class handles the test cases for a submitted list of game strings. It maps the solution depths to the total sum cost of time and cost in nodes,
+//and can return the averages of these values on a per-depth basis.
 public class Tester {
     private Map<Integer, Long> totalTime; //maps depth to sum of time taken for all puzzles at that depth
     private Map<Integer, Integer> totalCost; //maps depth to sum of search costs in nodes for all puzzles at that depth
