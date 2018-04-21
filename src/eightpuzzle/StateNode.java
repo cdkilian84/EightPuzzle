@@ -54,12 +54,6 @@ public abstract class StateNode implements Comparable<StateNode>{
     @Override
     public int hashCode(){
         return boardState.hashCode();
-//        int primeval = 19;
-//        int hash = boardState.hashCode();
-//        if(parent != null){
-//            hash += primeval * parent.hashCode();
-//        }
-//        return hash;
     }
     
     

@@ -13,20 +13,29 @@ public class Tester {
     private Map<Integer, Long> totalTime; //maps depth to sum of time taken for all puzzles at that depth
     private Map<Integer, Integer> totalCost; //maps depth to sum of search costs in nodes for all puzzles at that depth
     private Map<Integer, Integer> numberOfInstances; //maps depth to number of games completed at that depth
+    private String chosenHeuristic;
     private final String HEURISTIC_1 = "H1"; //corresponds to StateNodeH1 implementing heuristic #1 - number of misplaced tiles
     private final String HEURISTIC_2 = "H2"; //corresponds to StateNodeH2 implementing heuristic #2 - the sum of the distances of the tiles from their goal positions
     
-    
-    public Tester(){
+    //constructor
+    public Tester(String heuristic){
         totalTime = new HashMap<>();
         totalCost = new HashMap<>();
         numberOfInstances = new HashMap<>();
+        if(heuristic.equals(HEURISTIC_2)){
+            chosenHeuristic = HEURISTIC_2;
+        }else{
+            chosenHeuristic = HEURISTIC_1;
+        }
     }
     
+    
+    //Primary method for running tests - It accepts a list of strings representing game boards and tests each one in turn, storing the results
+    //in the member map values.
     public void runTests(List<String> gamesToTest){
         
         for(String game : gamesToTest){
-            GameHandler handler = new GameHandler(game, HEURISTIC_1);
+            GameHandler handler = new GameHandler(game, chosenHeuristic);
             //System.out.println("Game number " + count);
             if(handler.checkIfSolvable()){
                 long startTime = System.nanoTime();
@@ -65,6 +74,8 @@ public class Tester {
     }
 
     
+    //Uses the mapped times on a per-depth basis to get the average time it took to find a solution at that depth.
+    //Returns a mapping of depths to their average times.
     public Map<Integer, Double> getAverageTimes(){
         Map<Integer, Double> averageTimesMap = new HashMap<>();
         
@@ -79,6 +90,8 @@ public class Tester {
     }
     
     
+    //Uses the mapped costs on a per-depth basis to get average cost of a solution at that depth.
+    //Returns a mapping of depths to their average cost.
     public Map<Integer, Double> getAverageCosts(){
         Map<Integer, Double> averageCostMap = new HashMap<>();
         
@@ -92,7 +105,7 @@ public class Tester {
         return averageCostMap;
     }
     
-
+    //Getters for member variables
     public Map<Integer, Long> getTotalTime() {
         return totalTime;
     }

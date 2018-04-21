@@ -33,10 +33,6 @@ public class StateNodeH2 extends StateNode {
                 //i == current location in string
                 distance += Math.abs((i % 3) - (characterVal % 3)); //calculate x-distance on game board = |(actual position % 3) - (goal position % 3)|
                 distance += Math.abs((i / 3) - (characterVal / 3)); //calculate y-distance on game board = |(actual position / 3) - (goal position / 3)| using integer division
-                
-                //System.out.println("For index value " + i + " and characterVal " + characterVal);
-                //System.out.println("X-distance was: " + Math.abs((i % 3) - (characterVal % 3)));
-                //System.out.println("Y-distance was: " + Math.abs((i / 3) - (characterVal / 3)));
                 totalDistance += distance;
             }
         }

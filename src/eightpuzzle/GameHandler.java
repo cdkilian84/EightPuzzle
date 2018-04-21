@@ -99,14 +99,12 @@ public class GameHandler {
             }
             explored.add(node);
             for(StateNode childNode : nodeGenerator(node)){
-                if(!explored.contains(childNode)){ //&& !frontier.contains(childNode)){
+                //note that we aren't checking for a cheaper value in the frontier, so all nodes not already explored are added to the frontier, even if they
+                //represent the same state (cheaper values will be considered first due to the use of priority queue)
+                if(!explored.contains(childNode)){ 
                     frontier.add(childNode);
-                    
-                }//else if(frontier.contains(childNode)){
-                    //if the child node is already in the frontier but with a higher path cost, replace with lower cost child node
-                 //   frontier = checkLowerCost(frontier, childNode);
-                //}
-                searchCost++;
+                }
+                searchCost++; //every node generated is counted for total search cost
             }
         }
     }
@@ -254,9 +252,11 @@ public class GameHandler {
     }
     
     
-        //Method to check for and potentially replace a node from within the frontier priority queue - requires removing elements
+    //Method to check for and potentially replace a node from within the frontier priority queue - requires removing elements
     //from queue, storing them temporarily in a list until the desired node is found. Then checks can be made, and elements returned
     //to the queue, which will itself be returned.
+    //NOTE: This method was removed from implementation to save on processing time - frontier is allowed to hold "duplicate" nodes with different costs.
+    //This code has been left here for completeness sake.
 //    private Queue<StateNode> checkLowerCost(Queue<StateNode> frontier, StateNode nodeToCheck){
 //        Queue<StateNode> holdingQueue = new PriorityQueue<>();
 //        
@@ -272,4 +272,5 @@ public class GameHandler {
 //        
 //        return holdingQueue;
 //    }
+    
 }
