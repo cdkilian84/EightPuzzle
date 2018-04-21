@@ -45,7 +45,7 @@ public class PuzzleDriver {
         
         Console console = System.console();
         if (console == null) {
-            System.out.println("No console: non-interactive mode!");
+            System.out.println("No console: To run the game menu, run from the command line!");
             System.exit(0);
         }
         
@@ -110,36 +110,50 @@ public class PuzzleDriver {
         //Testing stuff happens here - commented out for submission
         /*
         List<String> allGames = generateAllTestCases(5000);
-        Tester myTester = new Tester(HEURISTIC_2);
+        Tester myTesterH1 = new Tester(HEURISTIC_1);
+        Tester myTesterH2 = new Tester(HEURISTIC_2);
+        List<Tester> bothTests = new ArrayList<>();
+        int nameNum = 1;
         
-        myTester.runTests(allGames);
-        Map<Integer, Double> averageTimes = myTester.getAverageTimes();
-        Map<Integer, Double> averageCosts = myTester.getAverageCosts();
-        Map<Integer, Integer> instances = myTester.getNumberOfInstances();
-        StringBuilder output = new StringBuilder();
-        int totalInstances = 0;
-        NumberFormat formatter = new DecimalFormat("#0.00");
+        //run H1 and H2 tests on the same set of games, and output results to appropriately named and numbered CSV's
+        myTesterH1.runTests(allGames);
+        myTesterH2.runTests(allGames);
+        bothTests.add(myTesterH1);
+        bothTests.add(myTesterH2);
         
-        
-        for(Integer depth : averageTimes.keySet()){
-            System.out.printf("Depth " + depth + ":\tTime: %.2f \n", averageTimes.get(depth));
-            output.append(depth).append(",").append(instances.get(depth)).append(",").append(formatter.format(averageTimes.get(depth))).append("\n");
+        for(Tester myTester : bothTests){
+            Map<Integer, Double> averageTimes = myTester.getAverageTimes();
+            Map<Integer, Double> averageCosts = myTester.getAverageCosts();
+            Map<Integer, Integer> instances = myTester.getNumberOfInstances();
+            StringBuilder output = new StringBuilder();
+            int totalInstances = 0;
+            NumberFormat formatter = new DecimalFormat("#0.00");
+
+
+            for(Integer depth : averageTimes.keySet()){
+                System.out.printf("Depth " + depth + ":\tTime: %.2f \n", averageTimes.get(depth));
+                output.append(depth).append(",").append(instances.get(depth)).append(",").append(formatter.format(averageTimes.get(depth))).append("\n");
+            }
+            String outputName = "timeResultsH" + nameNum + ".csv";
+            outputResults(output.toString(), outputName, "Average Time");
+            output = new StringBuilder();
+
+            for(Integer depth : averageCosts.keySet()){
+                System.out.printf("Depth " + depth + ":\tCost: %.2f \n", averageCosts.get(depth));
+                output.append(depth).append(",").append(instances.get(depth)).append(",").append(formatter.format(averageCosts.get(depth))).append("\n");
+            }
+            outputName = "costResultsH" + nameNum + ".csv";
+            outputResults(output.toString(), outputName, "Average Cost");
+
+            for(Integer depth : instances.keySet()){
+                System.out.println("Depth " + depth + ":\tInstances: " + instances.get(depth));
+                totalInstances += instances.get(depth);
+            }
+            System.out.println("Total instances: " + totalInstances);
+            nameNum++;
         }
-        outputResults(output.toString(), "timeResults.csv", "Average Time");
-        output = new StringBuilder();
-        
-        for(Integer depth : averageCosts.keySet()){
-            System.out.printf("Depth " + depth + ":\tCost: %.2f \n", averageCosts.get(depth));
-            output.append(depth).append(",").append(instances.get(depth)).append(",").append(formatter.format(averageCosts.get(depth))).append("\n");
-        }
-        outputResults(output.toString(), "costResults.csv", "Average Cost");
-        
-        for(Integer depth : instances.keySet()){
-            System.out.println("Depth " + depth + ":\tInstances: " + instances.get(depth));
-            totalInstances += instances.get(depth);
-        }
-        System.out.println("Total instances: " + totalInstances);
         */
+        
     }
     
     public static void readFile(String fileName) {
@@ -177,7 +191,7 @@ public class PuzzleDriver {
         
         while(count < numOfCases){
             String potentialGame = randomGameGenerator();
-            GameHandler handler = new GameHandler(potentialGame, HEURISTIC_1);
+            GameHandler handler = new GameHandler(potentialGame, HEURISTIC_2);
             if(handler.checkIfSolvable()){
                 allGames.add(potentialGame);
                 count++;
